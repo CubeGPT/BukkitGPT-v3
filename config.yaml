@@ -1,0 +1,11 @@
+########## EDIT REQUIRED ##########
+
+# GPT SETTINGS #
+# Get your api key from openai. Remember google/bing is always your best friend.
+# Model names: gpt-4-turbo-preview, gpt-3.5-turbo, etc.
+# Recommend -> gpt-4-turbo (Better performance, more expensive), gpt-4-o (Good performance, cheaper)
+
+API_KEY: "" # Free API Key with GPT-4 access: https://github.com/CubeGPT/.github/discussions/1
+BASE_URL: "https://api.openai.com/v1/chat/completions"
+
+# More config options here.

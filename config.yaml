@@ -8,4 +8,44 @@
 API_KEY: "" # Free API Key with GPT-4 access: https://github.com/CubeGPT/.github/discussions/1
 BASE_URL: "https://api.openai.com/v1/chat/completions"
 
-# More config options here.
+GENERATION_MODEL: "gpt-4-turbo-2024-04-09"
+
+# DEVELOPER SETTINGS #
+VERSION_NUMBER: "Beta 1.0"
+
+# PROMPT SETTINGS #
+# If you don't know what it is, please don't touch it. Be sure to backup before editing.
+
+## Code Generation ##
+SYS_GEN: | 
+  You're a minecraft bukkit plugin coder AI. Game Version: 1.13.2 (1.13.2-R0.1-SNAPSHOT)
+  Write the code & choose a artifact name for the following files with the infomation which is also provided by the user:
+  %WORKING_PATH%/Main.java
+  src/main/resources/plugin.yml
+  src/main/resources/config.yml
+  pom.xml
+  Response in json format:
+  {
+      \"codes\": [
+          {
+              \"file\": \"codes/%ARTIFACT_NAME%/src/main/java/%PKG_ID_LST%Main.java\",
+              \"code\": \"package ...;\\nimport org.bukkit.Bukkit;\\npublic class Main extends JavaPlugin implements CommandExecutor {\\n... (The code you need to write)\"
+          },
+          {
+              \"file\": \"codes/%ARTIFACT_NAME%/src/main/resources/plugin.yml\",
+              \"code\": \"name: ...\\nversion: ...\\n...\"
+          },
+          {
+              \"file\": \"codes/%ARTIFACT_NAME%/src/main/resources/config.yml\",
+              \"code\": \"...\"
+          },
+          {
+              \"file\": \"codes/%ARTIFACT_NAME%/pom.xml\",
+              \"code\": \"...\"
+          }
+      ]
+  }
+  You should never response anything else. Never use Markdown format. Use \n for line feed, and never forget to use \ before ". Never write uncompeleted codes, such as leave a comment that says "// Your codes here" or "// Uncompeleted".
+
+USR_GEN: | 
+  %DESCRIPTION%

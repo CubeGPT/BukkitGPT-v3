@@ -1,8 +1,9 @@
 from openai import OpenAI
-import mcschematic
+import chardet
 import sys
 import json
 import locale
+import os
 
 from log_writer import logger
 import config
@@ -83,7 +84,74 @@ def askgpt(system_prompt: str, user_prompt: str, model_name: str, disable_json_m
     logger(f"askgpt: extracted reply {assistant_reply}")
     return assistant_reply
 
-# Core codes here.
+def response_to_action(msg):
+    """
+    Converts a response from ChatGPT to an action.
+
+    Args:
+        msg (str): The response from ChatGPT.
+
+    Returns:
+        str: The action to take.
+    """
+    text = json.loads(msg)
+
+    codes = text["codes"]
+
+    for section in codes:
+        file = section["file"]
+        code = section["code"]
+
+        paths = file.split("/")
+
+        # Join the list elements to form a path
+        path = os.path.join(*paths)
+
+        # Get the directory path and the file name
+        dir_path, file_name = os.path.split(path)
+
+        # Create directories, if they don't exist
+        try:
+            os.makedirs(dir_path, exist_ok=True)
+        except FileNotFoundError:
+            pass
+
+        # Create the file
+        with open(path, 'w') as f:
+            f.write(code)  # Write an empty string to the file
+
+def mixed_decode(text: str):
+    """
+    Decode a mixed text containing both normal text and a byte sequence.
+
+    Args:
+        text (str): The mixed text to be decoded.
+
+    Returns:
+        str: The decoded text, where the byte sequence has been converted to its corresponding characters.
+
+    """
+    # Split the normal text and the byte sequence
+    # Assuming the byte sequence is everything after the last colon and space ": "
+    try:
+        normal_text, byte_text = text.rsplit(": ", 1)
+    except (TypeError, ValueError):
+        # The text only contains normal text
+        return text
+
+    # Convert the byte sequence to actual bytes
+    byte_sequence = byte_text.encode('latin1')  # latin1 encoding maps byte values directly to unicode code points
+
+    # Detect the encoding of the byte sequence
+    detected_encoding = chardet.detect(byte_sequence)
+    encoding = detected_encoding['encoding']
+
+    # Decode the byte sequence
+    decoded_text = byte_sequence.decode(encoding)
+
+    # Combine the normal text with the decoded byte sequence
+    final_text = normal_text + ": " + decoded_text
+    return final_text
 
 if __name__ == "__main__":
     print("This script is not meant to be run directly. Please run console.py instead.")

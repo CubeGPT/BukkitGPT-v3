@@ -1,0 +1,5 @@
+name: ExamplePlugin4
+version: 1.0
+main: org.cubegpt._188eba63.Main
+api-version: 1.13
+author: CubeGPT

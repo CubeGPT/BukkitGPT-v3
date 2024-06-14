@@ -9,7 +9,9 @@ import uuid
 from log_writer import logger
 import config
 import core
+import build
 
+#---------- Functions ----------#
 def open_config(args: dict):
     """
     Opens the config file.
@@ -94,22 +96,134 @@ def raise_error(args: dict):
     """
     raise Exception("This is a test error.")
 
-root = CreateQGUI(title="CubeAgents",
-                  tab_names=["Generate", "Settings", "DevTools"]
+#---------- Generate Function ----------#
+def generate(args: dict):
+    """
+    Generates the plugin.
+
+    Args:
+        args (dict): A dictionary containing the arguments.
+
+    Returns:
+        bool: Always True.
+    """
+    global error_msg, pkg_id_path
+
+    # Get user inputs
+    name = args["PluginName"].get()
+    description = args["PluginDescription"].get()
+    
+    artifact_name = name.replace(" ", "")
+    package_id = f"org.cubegpt.{uuid.uuid4().hex[:8]}"
+
+    pkg_id_path = ""
+    for id in package_id.split("."):
+        pkg_id_path += id + "/"
+
+    logger(f"user_input -> name: {name}")
+    logger(f"user_input -> description: {description}")
+    logger(f"random_generate -> package_id: {package_id}")
+    logger(f"str_path -> pkg_id_path: {pkg_id_path}")
+
+    print("Generating plugin...")
+
+    codes = core.askgpt(config.SYS_GEN.replace("%ARTIFACT_NAME%", artifact_name).replace("%PKG_ID_LST%", pkg_id_path), config.USR_GEN.replace("%DESCRIPTION", description), config.GENERATION_MODEL)
+    logger(f"codes: {codes}")
+
+    core.response_to_action(codes)
+
+    print("Code generated. Building now...")
+
+    result = build.build_plugin(artifact_name)
+    if "BUILD SUCCESS" in result:
+        print(f"Build complete. Find your plugin at 'codes/{artifact_name}/target/{artifact_name}.jar'")
+    elif "Compilation failure":
+        error_msg = result
+        print("Build failed. To pass the error to ChatGPT && let it fix, jump to the Fixing page and click the Fix button.")
+    else:
+        print("Unknown error. Please check the logs && send the log to @BaimoQilin on discord.")
+
+
+    return True
+
+def fix(args: dict):
+    """
+    Fixes the error.
+
+    Args:
+        args (dict): A dictionary containing the arguments.
+
+    Returns:
+        bool: Always True.
+    """
+    artifact_name = args["PluginName"].get()
+
+    print("Passing the error to ChatGPT...")
+
+    files = [f"codes/{artifact_name}/src/main/java/{pkg_id_path}Main.java",
+                f"codes/{artifact_name}/src/main/resources/plugin.yml",
+                f"codes/{artifact_name}/src/main/resources/config.yml",
+                f"codes/{artifact_name}/pom.xml"]
+
+    ids = ["main_java",
+            "plugin_yml",
+            "config_yml",
+            "pom_xml"]
+
+    main_java = None
+    plugin_yml = None
+    config_yml = None
+    pom_xml = None
+
+    for file in files:
+        with open(file, "r") as f:
+            code = f.read()
+            id = ids[files.index(file)]
+            globals()[id] = code
+
+    print("Generating...")
+    codes = core.askgpt(config.SYS_FIX.replace("%ARTIFACT_NAME%", str(artifact_name)), config.USR_FIX.replace("%MAIN_JAVA%", str(main_java)).replace("%PLUGIN_YML%", str(plugin_yml)).replace("%CONFIG_YML%", str(config_yml)).replace("%POM_XML%", str(pom_xml)).replave("%PKG_ID_LST%", pkg_id_path).replace("%P_ERROR_MSG%", str(error_msg)), config.FIXING_MODEL)
+
+    shutil.rmtree(f"codes/{artifact_name}")
+    core.response_to_action(codes)
+
+    print("Code generated. Building now...")
+
+    result = build.build_plugin(artifact_name)
+
+    if "BUILD SUCCESS" in result:
+        print(f"Build complete. Find your plugin at 'codes/{artifact_name}/target/{artifact_name}.jar'")
+    else:
+        print("Build failed again. Please check the logs && send the log to @BaimoQilin on discord.")
+
+    return True
+
+#---------- Main Program ----------#
+
+root = CreateQGUI(title="BukkitGPT-v3",
+                  tab_names=["Generate", "Fixing", "Settings", "DevTools"]
                   )
+error_msg = None
 
 logger("Starting program.")
 
 # Initialize Core
 core.initialize()
 
+print("BukkitGPT v3 beta console running")
+
 # Banner
-root.add_banner_tool(GitHub("https://github.com/CubeGPT/CubeAgents"))
+root.add_banner_tool(GitHub("https://github.com/CubeGPT/BukkitGPT-v3"))
 
 # Generate Page
-# Codes here.
+root.add_notebook_tool(InputBox(name="PluginName", default="ExamplePlugin", label_info="Plugin Name"))
+root.add_notebook_tool(InputBox(name="PluginDescription", default="Send msg 'hello' to every joined player.", label_info="Plugin Description"))
 
-# More pages here.
+root.add_notebook_tool(RunButton(bind_func=generate, name="Generate", text="Generate Plugin", checked_text="Generating...", tab_index=0))
+
+# Fixing Page #
+root.add_notebook_tool(Label(name="Fixing_DESCRIPTION", text="This is a fixing page. If the build fails, click the Fix button to fix the error in the LATEST build.", tab_index=1))
+root.add_notebook_tool(RunButton(bind_func=fix, name="Fix", text="Fix", checked_text="Fixing...", tab_index=1))
 
 # Settings Page
 root.add_notebook_tool(InputBox(name="API_KEY", default=config.API_KEY, label_info="API Key", tab_index=2))
@@ -132,7 +246,7 @@ root.add_notebook_tool(RunButton(bind_func=raise_error, name="Raise Error", text
 # Sidebar
 root.set_navigation_about(author="CubeGPT Team",
                               version=config.VERSION_NUMBER,
-                              github_url="https://github.com/CubeGPT/CubeAgents")
+                              github_url="https://github.com/CubeGPT/BukkitGPT-v3")
 
 
 

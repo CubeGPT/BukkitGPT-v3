@@ -1,2 +1,3 @@
 openai>=1.13.3
 pyyaml
+cx_Freeze

@@ -12,7 +12,7 @@ GENERATION_MODEL: "gpt-4-turbo-2024-04-09"
 FIXING_MODEL: "gpt-4-turbo-2024-04-09"
 
 # DEVELOPER SETTINGS #
-VERSION_NUMBER: "Beta 1.0"
+VERSION_NUMBER: "0.1.1"
 
 # PROMPT SETTINGS #
 # If you don't know what it is, please don't touch it. Be sure to backup before editing.

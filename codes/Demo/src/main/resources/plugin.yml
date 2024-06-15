@@ -1,0 +1,10 @@
+name: Demo
+version: 1.0
+main: org.cubegpt._54672e99.Main
+api-version: 1.13
+author: CubeGPT
+dependencies: []
+commands:
+  demo:
+    description: Sends a greeting message to everyone.
+    usage: /<command>

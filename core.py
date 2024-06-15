@@ -23,6 +23,10 @@ def initialize():
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
     logger(f"Launch. Software version {config.VERSION_NUMBER}, platform {sys.platform}")
 
+    if "gpt-3.5" in config.GENERATION_MODEL and config.BYPASS_NO_GPT35_FOR_GENERATION_LIMIT is False:
+        print("gpt-3.5 writes bugs *all the time* and is not recommended for code generation. Switching to gpt-4.")
+        config.edit_config("GENERATION_MODEL", config.GENERATION_MODEL.replace("gpt-3.5", "gpt-4"))
+
 def askgpt(system_prompt: str, user_prompt: str, model_name: str, disable_json_mode: bool = False, image_url: str = None):
     """
     Interacts with ChatGPT using the specified prompts.

@@ -201,7 +201,7 @@ def fix(args: dict):
 #---------- Main Program ----------#
 
 root = CreateQGUI(title="BukkitGPT-v3",
-                  tab_names=["Generate", "Fixing", "Settings", "DevTools"]
+                  tab_names=["Generate", "Settings", "DevTools"]
                   )
 error_msg = None
 
@@ -222,26 +222,26 @@ root.add_notebook_tool(InputBox(name="PluginDescription", default="Send msg 'hel
 root.add_notebook_tool(RunButton(bind_func=generate, name="Generate", text="Generate Plugin", checked_text="Generating...", tab_index=0))
 
 # Fixing Page #
-root.add_notebook_tool(Label(name="Fixing_DESCRIPTION", text="This is a fixing page. If the build fails, click the Fix button to fix the error in the LATEST build.", tab_index=1))
-root.add_notebook_tool(RunButton(bind_func=fix, name="Fix", text="Fix", checked_text="Fixing...", tab_index=1))
+# root.add_notebook_tool(Label(name="Fixing_DESCRIPTION", text="This is a fixing page. If the build fails, click the Fix button to fix the error in the LATEST build.", tab_index=1))
+# root.add_notebook_tool(RunButton(bind_func=fix, name="Fix", text="Fix", checked_text="Fixing...", tab_index=1))
 
 # Settings Page
-root.add_notebook_tool(InputBox(name="API_KEY", default=config.API_KEY, label_info="API Key", tab_index=2))
-root.add_notebook_tool(InputBox(name="BASE_URL", default=config.BASE_URL, label_info="BASE URL", tab_index=2))
+root.add_notebook_tool(InputBox(name="API_KEY", default=config.API_KEY, label_info="API Key", tab_index=1))
+root.add_notebook_tool(InputBox(name="BASE_URL", default=config.BASE_URL, label_info="BASE URL", tab_index=1))
 
 config_buttons = HorizontalToolsCombine([
-     BaseButton(bind_func=save_apply_config, name="Save & Apply Config", text="Save & Apply", tab_index=2),
-     BaseButton(bind_func=load_config, name="Load Config", text="Load Config", tab_index=2),
-     BaseButton(bind_func=open_config, name="Open Config", text="Open Full Config", tab_index=2)
+     BaseButton(bind_func=save_apply_config, name="Save & Apply Config", text="Save & Apply", tab_index=1),
+     BaseButton(bind_func=load_config, name="Load Config", text="Load Config", tab_index=1),
+     BaseButton(bind_func=open_config, name="Open Config", text="Open Full Config", tab_index=1)
 ])
 root.add_notebook_tool(config_buttons)
 
 # DevTools Page
-root.add_notebook_tool(Label(name="DevTool_DESCRIPTION", text="This is a testing page for developers. Ignore it if you are a normal user.", tab_index=3))
-root.add_notebook_tool(Label(name="DevTool_CONFIG_API_KEY_DISPLAY", text=f"CONFIG.API_KEY = {config.API_KEY}", tab_index=3))
-root.add_notebook_tool(Label(name="DevTools_CONFIG_BASE_URL_DISPLAY", text=f"CONFIG.BASE_URL = {config.BASE_URL}", tab_index=3))
-root.add_notebook_tool(RunButton(bind_func=print_args, name="Print Args", text="Print Args", tab_index=3))
-root.add_notebook_tool(RunButton(bind_func=raise_error, name="Raise Error", text="Raise Error", tab_index=3))
+root.add_notebook_tool(Label(name="DevTool_DESCRIPTION", text="This is a testing page for developers. Ignore it if you are a normal user.", tab_index=2))
+root.add_notebook_tool(Label(name="DevTool_CONFIG_API_KEY_DISPLAY", text=f"CONFIG.API_KEY = {config.API_KEY}", tab_index=2))
+root.add_notebook_tool(Label(name="DevTools_CONFIG_BASE_URL_DISPLAY", text=f"CONFIG.BASE_URL = {config.BASE_URL}", tab_index=2))
+root.add_notebook_tool(RunButton(bind_func=print_args, name="Print Args", text="Print Args", tab_index=2))
+root.add_notebook_tool(RunButton(bind_func=raise_error, name="Raise Error", text="Raise Error", tab_index=2))
 
 # Sidebar
 root.set_navigation_about(author="CubeGPT Team",

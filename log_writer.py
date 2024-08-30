@@ -3,6 +3,7 @@ from datetime import datetime
 
 first_call_time = None
 
+
 def get_log_filename():
     global first_call_time
 
@@ -13,6 +14,7 @@ def get_log_filename():
 
     return log_filename
 
+
 def logger(text: str):
     log_filename = get_log_filename()
 
@@ -22,5 +24,5 @@ def logger(text: str):
 
     os.makedirs(os.path.dirname(log_filename), exist_ok=True)
 
-    with open(log_filename + ".log", "a", encoding='utf-8') as log_file:
+    with open(log_filename + ".log", "a", encoding="utf-8") as log_file:
         log_file.write(log_line)

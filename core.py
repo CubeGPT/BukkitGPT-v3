@@ -8,6 +8,7 @@ import os
 from log_writer import logger
 import config
 
+
 def initialize():
     """
     Initializes the software.
@@ -20,14 +21,28 @@ def initialize():
     Returns:
         None
     """
-    locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+    locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
     logger(f"Launch. Software version {config.VERSION_NUMBER}, platform {sys.platform}")
 
-    if "gpt-3.5" in config.GENERATION_MODEL and config.BYPASS_NO_GPT35_FOR_GENERATION_LIMIT is False:
-        print("gpt-3.5 writes bugs *all the time* and is not recommended for code generation. Switching to gpt-4.")
-        config.edit_config("GENERATION_MODEL", config.GENERATION_MODEL.replace("gpt-3.5", "gpt-4"))
+    if (
+        "gpt-3.5" in config.GENERATION_MODEL
+        and config.BYPASS_NO_GPT35_FOR_GENERATION_LIMIT is False
+    ):
+        print(
+            "gpt-3.5 writes bugs *all the time* and is not recommended for code generation. Switching to gpt-4."
+        )
+        config.edit_config(
+            "GENERATION_MODEL", config.GENERATION_MODEL.replace("gpt-3.5", "gpt-4")
+        )
 
-def askgpt(system_prompt: str, user_prompt: str, model_name: str, disable_json_mode: bool = False, image_url: str = None):
+
+def askgpt(
+    system_prompt: str,
+    user_prompt: str,
+    model_name: str,
+    disable_json_mode: bool = False,
+    image_url: str = None,
+):
     """
     Interacts with ChatGPT using the specified prompts.
 
@@ -52,33 +67,29 @@ def askgpt(system_prompt: str, user_prompt: str, model_name: str, disable_json_m
     if image_url is not None:
         messages = [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": [
-                {"type": "text", "text": user_prompt},
-                {"type": "image_url", "image_url": {"url": image_url}}
-                ]
-            }
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": user_prompt},
+                    {"type": "image_url", "image_url": {"url": image_url}},
+                ],
+            },
         ]
     else:
         messages = [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
+            {"role": "user", "content": user_prompt},
         ]
-
 
     logger(f"askgpt: system {system_prompt}")
     logger(f"askgpt: user {user_prompt}")
 
     # Create a chat completion
     if disable_json_mode:
-        response = client.chat.completions.create(
-            model=model_name,
-            messages=messages
-        )
+        response = client.chat.completions.create(model=model_name, messages=messages)
     else:
         response = client.chat.completions.create(
-            model=model_name,
-            response_format={"type": "json_object"},
-            messages=messages
+            model=model_name, response_format={"type": "json_object"}, messages=messages
         )
 
     logger(f"askgpt: response {response}")
@@ -87,6 +98,7 @@ def askgpt(system_prompt: str, user_prompt: str, model_name: str, disable_json_m
     assistant_reply = response.choices[0].message.content
     logger(f"askgpt: extracted reply {assistant_reply}")
     return assistant_reply
+
 
 def response_to_action(msg):
     """
@@ -121,8 +133,9 @@ def response_to_action(msg):
             pass
 
         # Create the file
-        with open(path, 'w') as f:
+        with open(path, "w") as f:
             f.write(code)  # Write an empty string to the file
+
 
 def mixed_decode(text: str):
     """
@@ -144,11 +157,13 @@ def mixed_decode(text: str):
         return text
 
     # Convert the byte sequence to actual bytes
-    byte_sequence = byte_text.encode('latin1')  # latin1 encoding maps byte values directly to unicode code points
+    byte_sequence = byte_text.encode(
+        "latin1"
+    )  # latin1 encoding maps byte values directly to unicode code points
 
     # Detect the encoding of the byte sequence
     detected_encoding = chardet.detect(byte_sequence)
-    encoding = detected_encoding['encoding']
+    encoding = detected_encoding["encoding"]
 
     # Decode the byte sequence
     decoded_text = byte_sequence.decode(encoding)
@@ -156,6 +171,7 @@ def mixed_decode(text: str):
     # Combine the normal text with the decoded byte sequence
     final_text = normal_text + ": " + decoded_text
     return final_text
+
 
 if __name__ == "__main__":
     print("This script is not meant to be run directly. Please run console.py instead.")

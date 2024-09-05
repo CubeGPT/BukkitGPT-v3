@@ -6,7 +6,7 @@
 # Recommend -> gpt-4-turbo (Better performance, more expensive), gpt-4-o (Good performance, cheaper)
 
 API_KEY: "" # Free API Key with GPT-4 access: https://github.com/CubeGPT/.github/discussions/1
-BASE_URL: "https://api.openai.com/v1/chat/completions"
+BASE_URL: "https://api.openai.com/v1"
 
 GENERATION_MODEL: "gpt-4-turbo-2024-04-09"
 FIXING_MODEL: "gpt-4-turbo-2024-04-09"

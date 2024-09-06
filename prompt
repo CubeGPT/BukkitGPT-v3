@@ -1,0 +1,3 @@
+这是一个Bukkit插件生成程序，可以使得用户使用GPT编写插件。现在你需要添加生成DataPack的选项，使得用户可以选择生成Bukkit插件或者DataPack。
+在`ui.py`中可以在Generate Page里添加这行代码 `root.add_notebook_tool(RadioObviousToolButton(options=["BukkitPlugin", "Datapack(Experimental)"], name="GenerationType", title="Type", default="BukkitPlugin",tab_index=0))`
+你还需要自行完成DataPack的生成逻辑。你可能需要更改的文件有`ui.py`, `core.py`, `config.yaml`, `console.py`等。你还可能需要创建一些新的文件或文件夹，也有可能不需要。祝你好运。

@@ -54,7 +54,7 @@ You can use BukkitGPT on any device with [Python 3+](https://www.python.org/).
 
 And you need to install the depencies with this command:
 ```
-pip install -r requirements.txt
+python -m pip install -U -r requirements.txt
 ```
 
 ## Quick Start

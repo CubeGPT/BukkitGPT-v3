@@ -1,6 +1,7 @@
 openai>=1.13.3
 pyyaml
 cx_Freeze
-ttkbootstrap
+ttkbootstrap==0.5.1
+pillow
 playwright
 chardet

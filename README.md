@@ -20,23 +20,21 @@
 BukkitGPT is an open source, free, AI-powered Minecraft Bukkit plugin generator. It was developed for minecraft server owners who are not technically savvy but need to implement all kinds of customized small plugins. From code to build, debug, all done by gpt.
 
 ## WebApp
+> [!WARNING]
+> There're big differences between *BukkitGPT(-v3)* and *BukkitGPT WebApp*. The BukkitGPT is a self-hosted, free, open-source, community-driven project, while the BukkitGPT WebApp is a paid, cloud-hosted service that provides a more user-friendly experience for non-developers.
+> Issues and questions about BukkitGPT WebApp should be directed to our [Discord Server](https://discord.gg/kTZtXw8s7r).
+
 Don't want to prepare the Python & Maven environment? Try our [WebApp](http://cubegpt.org/), designed for non-developers, just enter the plugin name and description, and you can get the plugin jar file.
 
-*The service is paid since the API key we are using is not free. You can get 1 key for 5 generations for $1 [here](https://buymeacoffee.com/baimoqilin/e/293180) or [here (for Chinese users)](https://afdian.com/item/b839835461e311efbd1252540025c377)
+*The service is paid since the API key we are using is not free. You can get 1 key for 5 generations for $1 [here](https://ko-fi.com/s/cd5d4fcaba) or [here (for Chinese users)](https://afdian.com/item/b839835461e311efbd1252540025c377)
 
 ## Partner
 [![](https://www.bisecthosting.com/partners/custom-banners/c37f58c7-c49b-414d-b53c-1a6e1b1cff71.webp)](https://bisecthosting.com/cubegpt)
 
 ## Features
 
-### Core
-- Automatically generate code
-- Automatically fix bugs
-- AI `Better Description`
-
-### GUI
-- Creating projects
-- Projects management
+- Automatically generate plugin code based on the user's description.
+- Edit existing plugins. (WIP)
 
 ## Plans and TODOs
 
@@ -44,63 +42,38 @@ Moved to [Projects Tab](https://github.com/orgs/CubeGPT/projects/4).
 
 ### Other projects of CubeGPT Team
 - [x] Bukkit plugin generator. {*.jar} ([BukkitGPT-v3](https://github.com/CubeGPT/BukkitGPT-v3))
-- [ ] Structure generator. {*.schem} (BuilderGPT, or something?)
+- [x] Structure generator. {*.schem} ([BuilderGPT](https://github.com/CubeGPT/BuilderGPT))
 - [ ] Serverpack generator. {*.zip} (ServerpackGPT or ServerGPT, or..?)
 - [ ] Have ideas or want to join our team? Send [us](mailto:admin@baimoqilin.top) an email!
 
-## How it works
-When the user types the plugin description, the program lets `gpt-3.5-turbo` optimize the prompt, and then gives the optimized prompt to `gpt-4-turbo-preview`. `gpt-4-turbo-preview` will return it in json format, for example:
-```
-{
-    "output": [
-        {
-            "file": "%WORKING_PATH%/Main.java",
-            "code": "package ...;\nimport org.bukkit.Bukkit;\npublic class Main extends JavaPlugin implements CommandExecutor {\n..."
-        },
-        {
-            "file": "src/main/resources/plugin.yml",
-            "code": "name: ...\nversion: ...\n..."
-        },
-        {
-            "file\": "src/main/resources/config.yml",
-            "code\": "..."
-        },
-        {
-            "file": "pom.xml",
-            "code": "..."
-        }
-    ]
-}
-```
-The program parses this prompt, copies the entire `projects/template` folder and names it `artifact_name`, and puts the code from the prompt into the each file. Finally the program builds the jar using maven.
-
 ## Requirements
-You can use BukkitGPT on any computer with [Java](https://www.azul.com/downloads/), [Maven](https://maven.apache.org/), [Python 3+](https://www.python.org/).  
-
-And you need to install this package:
-```
-pip install openai
-```
+You can use BukkitGPT on any computer with [Java](https://www.azul.com/downloads/), [Maven](https://maven.apache.org/), [Python 3+](https://www.python.org/) **AND** [BuildTools](https://github.com/CubeGPT/BukkitGPT-v3#the-pom-for-orgspigotmcspigotjar1132-r01-snapshot-is-missing) installed. 
 
 ## Quick Start
 
-*(Make sure you have the [Python](https://www.python.org) environment installed on your computer)*
-
-
-### Python/UI
-
-1. Download `Source Code.zip` from [the release page](https://github.com/CubeGPT/BukkitGPT-v3/releases) and unzip it.
-2. Edit `config.yaml`, fill in your OpenAI Apikey. If you don't know how, remember that [Google](https://www.google.com/) and [Bing](https://www.bing.com/) are always your best friends.
-3. Install dependencies by running `pip install -r requirements.txt`.
-4. Run `ui.py` (bash `python console.py`).
-5. Enter the artifact name & description & package id as instructed to generate your plugin.
-6. Copy your plugin from `projects/<artifact_name>/target/<artifact_name>-<version>.jar` to your server `plugins/` folder.
-7. Restart your server and enjoy your AI-powered-plugin.
+1. Clone the repository and install the dependencies with command:
+```bash
+git clone https://github.com/CubeGPT/BukkitGPT-v3
+cd BukkitGPT-v3
+python -m venv venv
+source venv/bin/activate # for Windows, use `venv\Scripts\activate`
+pip install -r requirements.txt
+```
+2. Edit `config.yaml` and fill in your [OpenAI API Key](https://platform.openai.com/settings/organization/api-keys).
+3. Run `ui.py` (with command `python ui.py`).
+4. Enter the artifact name & description & package id as instructed to generate your plugin.
+5. Copy your plugin from `projects/<artifact_name>/target/<artifact_name>-<version>.jar` to your server `plugins/` folder.
+6. Restart your server and enjoy your AI-powered-plugin.
 
 ## Troubleshooting
 
 ### The POM for org.spigotmc:spigot:jar:1.13.2-R0.1-SNAPSHOT is missing
-Solution: [Download BuildTools](https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar), place it in an empty folder, double-click it, choose "1.13.2" in `Settings/Select Version`, click `Compile` in the bottom right corner and let it finish. And then go to your BukkitGPT folder, in `projects/<artifact_name_of_your_plugin>`, double-click `build.bat`. You'll find your plugin in `projects/<artifact_name_of_your_plugin>/target` folder.
+1. [Download BuildTools](https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar) and place it in *an empty folder*.
+2. Open the file.
+3. Choose `1.13.2` in `Settings/Select Version`.
+4. Click `Compile` in the bottom right corner and let it finish.
+5. Go to your BukkitGPT folder, execute `build.bat` in `projects/<artifact_name_of_your_plugin>`.
+6. You'll find your plugin in `projects/<artifact_name_of_your_plugin>/target` folder.
 
 ## Contributing
 If you like the project, you can give the project a star, or [submit an issue](https://github.com/CubeGPT/BukkitGPT-v3/issues) or [pull request](https://github.com/CubeGPT/BukkitGPT-v3/pulls) to help make it better.

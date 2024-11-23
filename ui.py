@@ -231,7 +231,9 @@ def fix(args: dict):
 
 # ---------- Main Program ----------#
 
-root = CreateQGUI(title="BukkitGPT-v3", tab_names=["Generate", "Settings", "DevTools"])
+root = CreateQGUI(title="BukkitGPT-v3",
+                  tab_names=["Generate", "Settings", "DevTools"]
+                  )
 error_msg = None
 
 logger("Starting program.")

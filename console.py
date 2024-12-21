@@ -64,10 +64,10 @@ if __name__ == "__main__":
             print("Passing the error to ChatGPT...")
 
             files = [
-                f"codes/{artifact_name}/src/main/java/{pkg_id_path}Main.java",
-                f"codes/{artifact_name}/src/main/resources/plugin.yml",
-                f"codes/{artifact_name}/src/main/resources/config.yml",
-                f"codes/{artifact_name}/pom.xml",
+                f"./codes/{artifact_name}/src/main/java/{pkg_id_path}Main.java",
+                f"./codes/{artifact_name}/src/main/resources/plugin.yml",
+                f"./codes/{artifact_name}/src/main/resources/config.yml",
+                f"./codes/{artifact_name}/pom.xml",
             ]
 
             ids = ["main_java", "plugin_yml", "config_yml", "pom_xml"]

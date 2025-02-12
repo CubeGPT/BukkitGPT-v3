@@ -19,8 +19,8 @@
 
 BukkitGPT is an open source, free, AI-powered Minecraft Bukkit plugin generator. It was developed for minecraft server owners who are not technically savvy but need to implement all kinds of customized small plugins. From code to build, debug, all done by the LLM.
 
-<details>
-<summary>The WebApp Edition: Generate plugin on a website, available even on your phone!</summary>
+## WebApp
+
 > [!WARNING]
 > There're big differences between *BukkitGPT(-v3)* and *BukkitGPT WebApp*. The BukkitGPT is a self-hosted, free, open-source, community-driven project, while the BukkitGPT WebApp is a paid, cloud-hosted service that provides a more user-friendly experience for non-developers.
 > Issues and questions about BukkitGPT WebApp should be directed to our [Discord Server](https://discord.gg/kTZtXw8s7r).

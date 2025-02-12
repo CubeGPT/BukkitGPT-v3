@@ -13,7 +13,7 @@ import build
 
 
 # ---------- Functions ----------#
-def open_config(args: dict):
+def open_config(args: dict) -> bool:
     """
     Opens the config file.
 
@@ -28,7 +28,7 @@ def open_config(args: dict):
     return True
 
 
-def save_apply_config(args: dict):
+def save_apply_config(args: dict) -> bool:
     """
     Saves and applies the configuration.
 
@@ -58,7 +58,7 @@ def save_apply_config(args: dict):
     return True
 
 
-def load_config(args: dict):
+def load_config(args: dict) -> bool:
     """
     Loads the configuration.
 
@@ -76,7 +76,7 @@ def load_config(args: dict):
     return True
 
 
-def print_args(args: dict):
+def print_args(args: dict) -> bool:
     """
     Prints the arguments.
 
@@ -103,12 +103,12 @@ def raise_error(args: dict):
 
 
 # ---------- Generate Function ----------#
-def generate(args: dict):
+def generate(args: dict) -> bool:
     """
     Generates the plugin.
 
     Args:
-        args (dict): A dictionary containing the arguments.
+        args (dict): A dictionary containing the necessary arguments.
 
     Returns:
         bool: Always True.
@@ -147,26 +147,22 @@ def generate(args: dict):
     print("Code generated. Building now...")
 
     result = build.build_plugin(artifact_name)
-    if "BUILD SUCCESS" in result:
-        print(
-            f"Build complete. Find your plugin at 'codes/{artifact_name}/target/{artifact_name}.jar'"
-        )
-    elif "Compilation failure":
-        error_msg = result
-        print(
-            "Build failed. To pass the error to ChatGPT && let it fix, jump to the Fixing page and click the Fix button."
-        )
+
+    target_dir = f"codes/{artifact_name}/target"
+    jar_files = [f for f in os.listdir(target_dir) if f.endswith('.jar')]
+    
+    if jar_files:
+        print(f"Build complete. Find your plugin at '{target_dir}/{jar_files[0]}'")
     else:
-        print(
-            "Unknown error. Please check the logs && send the log to @BaimoQilin on discord."
-        )
+        error_msg = result
+        print("Build failed. This is because the code LLM generated has syntax errors. Please try again or switch to a better LLM like o1 or r1. IT IS NOT A BUG OF BUKKITGPT.")
 
     return True
 
 
-def fix(args: dict):
+def edit(args: dict) -> bool:
     """
-    Fixes the error.
+    Edits the plugin.
 
     Args:
         args (dict): A dictionary containing the arguments.
@@ -174,65 +170,79 @@ def fix(args: dict):
     Returns:
         bool: Always True.
     """
-    artifact_name = args["PluginName"].get()
+    # Get user inputs
+    original_jar = args["OriginalJAR"].get()
+    edit_request = args["EditRequest"].get()
 
-    print("Passing the error to ChatGPT...")
+    # Get the decompiled path
+    decompiled_path = f"codes/decompiled/{original_jar.split('/')[-1].split('.')[0]}"
 
-    files = [
-        f"codes/{artifact_name}/src/main/java/{pkg_id_path}Main.java",
-        f"codes/{artifact_name}/src/main/resources/plugin.yml",
-        f"codes/{artifact_name}/src/main/resources/config.yml",
-        f"codes/{artifact_name}/pom.xml",
-    ]
+    # Decompile the jar
+    core.decompile_jar(original_jar, decompiled_path)
 
-    ids = ["main_java", "plugin_yml", "config_yml", "pom_xml"]
+    # Generate a buildable maven folder in the decompiled path
+    os.makedirs(f"{decompiled_path}/src/main/java", exist_ok=True)
 
-    main_java = None
-    plugin_yml = None
-    config_yml = None
-    pom_xml = None
+    # Delete decompiled_path/summary.txt
+    summary_path = os.path.join(decompiled_path, "summary.txt")
+    if os.path.exists(summary_path):
+        os.remove(summary_path)
 
-    for file in files:
-        with open(file, "r") as f:
-            code = f.read()
-            id = ids[files.index(file)]
-            globals()[id] = code
+    # Move decompiled_path/* to decompiled_path/src/main/java
+    for item in os.listdir(decompiled_path):
+        if item != 'src':
+            s = os.path.join(decompiled_path, item)
+            d = os.path.join(decompiled_path, "src/main/java", item)
+            if os.path.isdir(s):
+                shutil.move(s, d)
+            elif os.path.isfile(s):
+                shutil.move(s, d)
+    
+    # Create empty pom.xml
+    with open(f"{decompiled_path}/pom.xml", "w") as f:
+        f.write("<!-- Replace with the pom.xml code -->")
 
-    print("Generating...")
-    codes = core.askgpt(
-        config.SYS_FIX.replace("%ARTIFACT_NAME%", str(artifact_name)),
-        config.USR_FIX.replace("%MAIN_JAVA%", str(main_java))
-        .replace("%PLUGIN_YML%", str(plugin_yml))
-        .replace("%CONFIG_YML%", str(config_yml))
-        .replace("%POM_XML%", str(pom_xml))
-        .replave("%PKG_ID_LST%", pkg_id_path)
-        .replace("%P_ERROR_MSG%", str(error_msg)),
-        config.FIXING_MODEL,
+    # Generate request
+    code_text = core.code_to_text(decompiled_path)
+    response = core.askgpt(
+        config.SYS_EDIT,
+        config.USR_EDIT.replace("ORIGINAL_CODE", code_text).replace("REQUEST", edit_request),
+        config.GENERATION_MODEL,
+        disable_json_mode=True
     )
 
-    shutil.rmtree(f"codes/{artifact_name}")
-    core.response_to_action(codes)
+    # Extract the response
+    diffs = core.parse_edit_response(response)
+    logger(f"[DEBUG] Extracted diffs: {diffs}")
 
-    print("Code generated. Building now...")
+    # Apply edit
+    response = core.apply_diff_changes(diffs, decompiled_path)
 
-    result = build.build_plugin(artifact_name)
-
-    if "BUILD SUCCESS" in result:
-        print(
-            f"Build complete. Find your plugin at 'codes/{artifact_name}/target/{artifact_name}.jar'"
-        )
+    if response[0] == False:
+        error_message = response[1]
+        # TODO: Pass the error to the LLM and fix that
+        print(f"The diff LLM generated is invalid. Please try again or switch to a better LLM like o1 or r1. IT IS NOT A BUG OF BUKKITGPT.")
     else:
-        print(
-            "Build failed again. Please check the logs && send the log to @BaimoQilin on discord."
-        )
+        print("Edit complete. Recompiling...")
+        result = build.build_plugin(decompiled_path, path=True)
+        target_dir = f"{decompiled_path}/target"
+        jar_files = [f for f in os.listdir(target_dir) if f.endswith('.jar')]
+        
+        if jar_files:
+            print(f"Build complete. Find your plugin at '{target_dir}/{jar_files[0]}'")
+        else:
+            error_msg = result
+            print("Build failed. This is because the code LLM generated has syntax errors. Please try again or switch to a better LLM like o1 or r1. IT IS NOT A BUG OF BUKKITGPT.")
+        
 
     return True
+
 
 
 # ---------- Main Program ----------#
 
 root = CreateQGUI(title="BukkitGPT-v3",
-                  tab_names=["Generate", "Settings", "DevTools"]
+                  tab_names=["Generate", "Edit", "Settings", "DevTools"]
                   )
 error_msg = None
 
@@ -268,17 +278,49 @@ root.add_notebook_tool(
     )
 )
 
-# Fixing Page #
-# root.add_notebook_tool(Label(name="Fixing_DESCRIPTION", text="This is a fixing page. If the build fails, click the Fix button to fix the error in the LATEST build.", tab_index=1))
-# root.add_notebook_tool(RunButton(bind_func=fix, name="Fix", text="Fix", checked_text="Fixing...", tab_index=1))
+# Edit Page #
+root.add_notebook_tool(
+    ChooseFileTextButton(
+        name="OriginalJAR",
+        label_info="Original JAR",
+        tab_index=1
+    )
+)
+
+root.add_notebook_tool(
+    InputBox(
+        name="EditRequest",
+        default="Add a command to send a message to all players.",
+        label_info="Edit Request",
+        tab_index=1
+    )
+)
+
+root.add_notebook_tool(
+    RunButton(
+        bind_func=edit,
+        name="Edit",
+        text="Edit Plugin",
+        checked_text="Editing...",
+        tab_index=1
+    )
+)
 
 # Settings Page
 root.add_notebook_tool(
-    InputBox(name="API_KEY", default=config.API_KEY, label_info="API Key", tab_index=1)
+    InputBox(
+        name="API_KEY", 
+        default=config.API_KEY, 
+        label_info="API Key", 
+        tab_index=2
+    )
 )
 root.add_notebook_tool(
     InputBox(
-        name="BASE_URL", default=config.BASE_URL, label_info="BASE URL", tab_index=1
+        name="BASE_URL", 
+        default=config.BASE_URL, 
+        label_info="BASE URL", 
+        tab_index=2
     )
 )
 
@@ -288,16 +330,19 @@ config_buttons = HorizontalToolsCombine(
             bind_func=save_apply_config,
             name="Save & Apply Config",
             text="Save & Apply",
-            tab_index=1,
+            tab_index=2
         ),
         BaseButton(
-            bind_func=load_config, name="Load Config", text="Load Config", tab_index=1
+            bind_func=load_config, 
+            name="Load Config", 
+            text="Load Config", 
+            tab_index=2
         ),
         BaseButton(
             bind_func=open_config,
             name="Open Config",
             text="Open Full Config",
-            tab_index=1,
+            tab_index=2
         ),
     ]
 )
@@ -308,29 +353,31 @@ root.add_notebook_tool(
     Label(
         name="DevTool_DESCRIPTION",
         text="This is a testing page for developers. Ignore it if you are a normal user.",
-        tab_index=2,
+        tab_index=3
     )
 )
 root.add_notebook_tool(
     Label(
         name="DevTool_CONFIG_API_KEY_DISPLAY",
         text=f"CONFIG.API_KEY = {config.API_KEY}",
-        tab_index=2,
+        tab_index=3
     )
 )
 root.add_notebook_tool(
     Label(
         name="DevTools_CONFIG_BASE_URL_DISPLAY",
         text=f"CONFIG.BASE_URL = {config.BASE_URL}",
-        tab_index=2,
+        tab_index=3
     )
 )
 root.add_notebook_tool(
-    RunButton(bind_func=print_args, name="Print Args", text="Print Args", tab_index=2)
+    RunButton(
+        bind_func=print_args, name="Print Args", text="Print Args", tab_index=3
+    )
 )
 root.add_notebook_tool(
     RunButton(
-        bind_func=raise_error, name="Raise Error", text="Raise Error", tab_index=2
+        bind_func=raise_error, name="Raise Error", text="Raise Error", tab_index=3
     )
 )
 

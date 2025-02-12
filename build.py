@@ -2,8 +2,8 @@ from subprocess import Popen, PIPE, STDOUT
 from log_writer import logger
 
 
-def build_plugin(artifact_name):
-    project_path = f"codes/{artifact_name}"
+def build_plugin(artifact_name, path=False) -> str:
+    project_path = f"codes/{artifact_name}" if path == False else artifact_name
     build_command = [
         "cd",
         project_path,

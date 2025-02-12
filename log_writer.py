@@ -16,6 +16,8 @@ def get_log_filename():
 
 
 def logger(text: str):
+    print(text)
+
     log_filename = get_log_filename()
 
     timestamp_prefix = datetime.now().strftime("[%H:%M:%S]")

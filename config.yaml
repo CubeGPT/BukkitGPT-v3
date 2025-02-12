@@ -2,17 +2,15 @@
 
 # GPT SETTINGS #
 # Get your api key from openai. Remember google/bing is always your best friend.
-# Model names: gpt-4o, o1-preview, o1-mini
-# Recommend -> o1-preview (Expensive and Slow, Best Performance) , gpt-4o (Cheap and fast, Good Performance)
 
-API_KEY: ""
-BASE_URL: "https://api.openai.com/v1"
+API_KEY: "" # Get your API Key from https://openrouter.ai/settings/keys for free
+BASE_URL: "https://openrouter.ai/api/v1"
 
-GENERATION_MODEL: "gpt-4o"
-FIXING_MODEL: "gpt-4o" # Deprecated
+GENERATION_MODEL: "deepseek/deepseek-r1:free"
+FIXING_MODEL: "openai/gpt-4o"
 
 # DEVELOPER SETTINGS #
-VERSION_NUMBER: "0.1.3"
+VERSION_NUMBER: "1.0.0"
 
 # PROMPT SETTINGS #
 # If you don't know what it is, please don't touch it. Be sure to backup before editing.
@@ -25,8 +23,9 @@ SYS_GEN: |
   codes/%ARTIFACT_NAME%/src/main/resources/plugin.yml
   codes/%ARTIFACT_NAME%/src/main/resources/config.yml
   codes/%ARTIFACT_NAME%/pom.xml
-  Response in json format.
   
+  You should output one and only one JSON containing all the final codes inside a ```json``` tag. You can response other stuffs like your plan, steps and explainations outside the ```json``` tag. Only the json code inside the ```json``` tag will be used to apply the edit and text outside will be ignored.
+
   This JSON contains an array under the key `codes`, where each element represents a file with its path and content for a Minecraft plugin project setup. Here’s a more detailed breakdown:
 
   The JSON has four file objects, each specifying:
@@ -35,7 +34,7 @@ SYS_GEN: |
   
   For each file:
   Main.java:
-   Path: codes/%ARTIFACT_NAME%/src/main/java/%PKG_ID_LST%/Main.java
+   Path: codes/%ARTIFACT_NAME%/src/main/java/%PKG_ID_LST%Main.java
    Content: The main Java class implementing the plugin's core functionality. It includes essential imports (import org.bukkit.Bukkit;) and extends JavaPlugin while implementing CommandExecutor.
   plugin.yml:
    Path: codes/%ARTIFACT_NAME%/src/main/resources/plugin.yml
@@ -65,50 +64,73 @@ SYS_GEN: |
   </dependencies>
 
   If the user ask you to add a new item, as you are not able to generate textures, you should use the texture of a similar item of vanilla minecraft. For example: Mooncake -> Texture: Pumpkin Pie.
-  You should never response anything else. Never use Markdown format. Never write not compeleted codes, such as leave a comment that says "// Your codes here" or "// Not compeleted". Do not forget to add ";" in the java codes. Make sure your response is json formatted.
-
-  Special Requirement: No ANY line feeds. Here're some examples:
-  (eg. for java codes) package com.example.plugin; import org.bukkit.plugin.java.JavaPlugin; public class Main extends JavaPlugin { public void onEnable() { getLogger().info("Plugin has been enabled!"); } }
-  (eg. for yaml files) {name: ExamplePlugin, main: com.example.example.plugin.Main, version: "1.0"}
-  Same for the xml file.
+  Never write not completed codes, such as leave a comment that says "// Your codes here" or "// Not completed". Do not forget to add ";" in the java codes. Make sure your response is json formatted.
 
 USR_GEN: | 
   %DESCRIPTION%
 
-SYS_FIX: |
-  You're a minecraft bukkit plugin coder AI. Game Version: 1.13.2 (1.13.2-R0.1-SNAPSHOT)
-  Fix the error in the code provided by user. The error message is also provided by the user.
-  Response in json format:
-  {
-      \"codes\": [
-          {
-              \"file\": \"codes/%ARTIFACT_NAME%/src/main/java/%PKG_ID_LST%Main.java\",
-              \"code\": \"package ...;\\nimport org.bukkit.Bukkit;\\npublic class Main extends JavaPlugin implements CommandExecutor {\\n... (The code you need to write)\"
-          },
-          {
-              \"file\": \"codes/%ARTIFACT_NAME%/src/main/resources/plugin.yml\",
-              \"code\": \"name: ...\\nversion: ...\\n...\"
-          },
-          {
-              \"file\": \"codes/%ARTIFACT_NAME%/src/main/resources/config.yml\",
-              \"code\": \"...\"
-          },
-          {
-              \"file\": \"codes/%ARTIFACT_NAME%/pom.xml\",
-              \"code\": \"...\"
-          }
-      ]
-  }
-  You should never response anything else. Never use Markdown format. Use \n for line feed, and never forget to use \ before ". Never write uncompeleted codes, such as leave a comment that says "// Your codes here" or "// Original code" or "// Uncompeleted".
+SYS_EDIT: |
+  You're a minecraft bukkit plugin coder AI.
+  You're given the codes of a minecraft bukkit plugin and a request to edit the plugin.
+  You should edit the codes to meet the request.
+  You should use git diff (without index line) to show the changes you made.
 
-USR_FIX: |
-  Main.java:
-  %MAIN_JAVA%
-  plugin.yml:
-  %PLUGIN_YML%
-  config.yml:
-  %CONFIG_YML%
-  pom.xml:
-  %POM_XML%
-  error message:
-  %P_ERROR_MSG%
+  For example, if the original code of codes/ExamplePlugin4/src/main/java/org/cubegpt/188eba63/Main.java is:
+  ```java
+  1 package org.cubegpt._188eba63;
+  2 
+  3 import org.bukkit.Bukkit;
+  4 import org.bukkit.event.EventHandler;
+  5 import org.bukkit.event.Listener;
+  6 import org.bukkit.event.player.PlayerJoinEvent;
+  7 import org.bukkit.plugin.java.JavaPlugin;
+  8 
+  9 public class Main extends JavaPlugin implements Listener {
+  10 
+  11     @Override
+  12     public void onEnable() {
+  13         Bukkit.getServer().getPluginManager().registerEvents(this, this);
+  14     }
+  15
+  16     @EventHandler
+  17     public void onPlayerJoin(PlayerJoinEvent event) {
+  18         event.getPlayer().sendMessage("hello");
+  19     }
+  20 }
+  ```
+  And the request is "Change the join message to 'hi'", then the response should be:
+  ```diff
+  diff --git a/codes/ExamplePlugin4/src/main/java/org/cubegpt/188eba63/Main.java b/codes/ExamplePlugin4/src/main/java/org/cubegpt/188eba63/Main.java
+  --- a/codes/ExamplePlugin4/src/main/java/org/cubegpt/188eba63/Main.java
+  +++ b/codes/ExamplePlugin4/src/main/java/org/cubegpt/188eba63/Main.java
+  @@ -1,17 +1,17 @@
+  -event.getPlayer().sendMessage("hello");
+  +event.getPlayer().sendMessage("hi");
+  @@ -19,20 +19,20 @@
+  ```
+  There could be multiple diffs, put each diff inside a markdown ```diff``` tag.
+  You can response other stuffs like your plan, steps and explainations outside the ```diff``` tag. Only the diffs inside the ```diff``` tag will be used to apply the edit and text outside will be ignored.
+  Make sure the diffs are valid and can be applied to the original code.
+  Do not forget to add ";" in the java codes.
+
+  There should be a empty pom.xml in the original code, and you should fill the pom.xml with things needed for the plugin to work. Always add this in pom.xml:
+    <repositories>
+      <repository>
+          <id>spigot-repo</id>
+          <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+      </repository>
+  </repositories>
+
+  <dependencies>
+      <dependency>
+             <groupId>org.spigotmc</groupId>
+             <artifactId>spigot-api</artifactId>
+             <version>1.13.2-R0.1-SNAPSHOT</version>
+             <scope>provided</scope>
+      </dependency>
+  </dependencies>
+
+USR_EDIT: |
+  %ORIGINAL_CODE%
+  My request:
+  %REQUEST%

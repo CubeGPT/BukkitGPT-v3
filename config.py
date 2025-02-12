@@ -15,12 +15,8 @@ def load_config():
     with open("config.yaml", "r") as conf:
         config_content = yaml.safe_load(conf)
         for key, value in config_content.items():
-            if key == "GENERATE_MODEL" and value == "gpt-4":
-                globals()[
-                    key
-                ] = "gpt-4-turbo-preview"  # Force using gpt-4-turbo-preview if the user set the GENERATE_MODEL to gpt-4. Because gpt-4 is not longer supports json modes.
             globals()[key] = value
-            logger(f"config: {key} -> {value}")
+            logger(f"config: {key} -> {value if key != 'API_KEY' else '********'}")
 
 
 def edit_config(key, value):

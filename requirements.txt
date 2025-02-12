@@ -5,3 +5,4 @@ ttkbootstrap==0.5.1
 pillow
 playwright
 chardet
+requests

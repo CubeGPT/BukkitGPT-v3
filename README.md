@@ -15,26 +15,28 @@
 > Developers and translators are welcome to join the CubeGPT Team!
 
 ## Introduction
-> Give GPT your idea, AI generates customized Minecraft server plugins with one click, which is suitable for Bukkit, Spigot, Paper, Purpur, Arclight, CatServer, Magma, Mohist and other Bukkit-based servers.
+> Give the LLM your idea, AI generates customized Minecraft server plugins with one click, which is suitable for Bukkit, Spigot, Paper, Purpur, Arclight, CatServer, Magma, Mohist and other Bukkit-based servers.
 
-BukkitGPT is an open source, free, AI-powered Minecraft Bukkit plugin generator. It was developed for minecraft server owners who are not technically savvy but need to implement all kinds of customized small plugins. From code to build, debug, all done by gpt.
+BukkitGPT is an open source, free, AI-powered Minecraft Bukkit plugin generator. It was developed for minecraft server owners who are not technically savvy but need to implement all kinds of customized small plugins. From code to build, debug, all done by the LLM.
 
-## WebApp
+<details>
+<summary>The WebApp Edition: Generate plugin on a website, available even on your phone!</summary>
 > [!WARNING]
 > There're big differences between *BukkitGPT(-v3)* and *BukkitGPT WebApp*. The BukkitGPT is a self-hosted, free, open-source, community-driven project, while the BukkitGPT WebApp is a paid, cloud-hosted service that provides a more user-friendly experience for non-developers.
 > Issues and questions about BukkitGPT WebApp should be directed to our [Discord Server](https://discord.gg/kTZtXw8s7r).
 
-Don't want to prepare the Python & Maven environment? Try our [WebApp](http://cubegpt.org/), designed for non-developers, just enter the plugin name and description, and you can get the plugin jar file.
+Don't want to deal with Python, Maven, BuildTools, and other complicated environments?
+Hey! Here's [the WebApp version](https://webapp.cubegpt.org) designed just for you - generate plugins **even on your phone**!
 
 *The service is paid since the API key we are using is not free. You can get 1 key for 5 generations for $1 [here](https://ko-fi.com/s/cd5d4fcaba) or [here (for Chinese users)](https://afdian.com/item/b839835461e311efbd1252540025c377)
 
-## Partner
-[![](https://www.bisecthosting.com/partners/custom-banners/c37f58c7-c49b-414d-b53c-1a6e1b1cff71.webp)](https://bisecthosting.com/cubegpt)
+*The WebApp edition doesn't support plugin editing feature yet, but we are working on it.
+</details>
 
 ## Features
 
 - Automatically generate plugin code based on the user's description.
-- Edit existing plugins. (WIP)
+- Edit existing plugins.
 
 ## Plans and TODOs
 
@@ -59,11 +61,9 @@ python -m venv venv
 source venv/bin/activate # for Windows, use `venv\Scripts\activate`
 pip install -r requirements.txt
 ```
-2. Edit `config.yaml` and fill in your [OpenAI API Key](https://platform.openai.com/settings/organization/api-keys).
+2. Edit `config.yaml` and fill in your OpenAI API Key.
 3. Run `ui.py` (with command `python ui.py`).
-4. Enter the artifact name & description & package id as instructed to generate your plugin.
-5. Copy your plugin from `projects/<artifact_name>/target/<artifact_name>-<version>.jar` to your server `plugins/` folder.
-6. Restart your server and enjoy your AI-powered-plugin.
+4. Enjoy!
 
 ## Troubleshooting
 

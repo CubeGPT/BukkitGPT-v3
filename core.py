@@ -104,7 +104,7 @@ def askgpt(
     logger(f"askgpt: response {response}")
 
     if "Too many requests" in str(response):
-        logger("Too many requests. Please try again later.")
+        logger("askgpt: Too many requests. Please try again later.")
         raise Exception("Your LLM provider has rate limited you. Please try again later. IT IS NOT A BUG OF BUKKITGPT.")
 
     # Extract the assistant's reply
@@ -132,7 +132,14 @@ def response_to_action(msg) -> str:
     pattern = r"```json(.*?)```"
     matches = re.findall(pattern, msg, re.DOTALL)
     if not matches:
-        raise Exception("Invalid response format from LLM. Expected JSON code block.")
+        if "```json" in msg and not "```" in msg:
+            logger(f"response_to_action: Found JSON block without closing code block in msg:\n{msg}")
+            # TODO: Resend the previous conversation to the LLM to get the full 
+            raise Exception("Invalid response format from LLM. Expected JSON code block. It seems like the response is interrupted, most likely because the output exceeds the max_tokens limit of your model. IT'S NOT A BUG OF BUKKITGPT.")
+        else:
+            logger(f"response_to_action: No JSON block found in response:\n{msg}")
+            raise Exception("Invalid response format from LLM. Expected JSON code block. IT'S NOT A BUG OF BUKKITGPT.")
+        
     json_codes = matches[0].strip()
 
     text = json.loads(json_codes)
@@ -348,7 +355,6 @@ def apply_diff_changes(diffs: list[str], decomplied_path) -> bool:
         modified_file = None
 
         for line in lines:
-            #####################
             logger(f"Handling pointing line: {line}")
             if line.startswith("---"):
                 logger(f"Found original file path: {line}")

@@ -146,7 +146,7 @@ def generate(args: dict) -> bool:
 
     print("Code generated. Building now...")
 
-    result = build.build_plugin(artifact_name)
+    result = build.build_plugin(f"codes/{artifact_name}")
 
     target_dir = f"codes/{artifact_name}/target"
     jar_files = [f for f in os.listdir(target_dir) if f.endswith('.jar')]
@@ -224,7 +224,7 @@ def edit(args: dict) -> bool:
         print(f"The diff LLM generated is invalid. Please try again or switch to a better LLM like o1 or r1. IT IS NOT A BUG OF BUKKITGPT.")
     else:
         print("Edit complete. Recompiling...")
-        result = build.build_plugin(decompiled_path, path=True)
+        result = build.build_plugin(decompiled_path)
         target_dir = f"{decompiled_path}/target"
         jar_files = [f for f in os.listdir(target_dir) if f.endswith('.jar')]
         

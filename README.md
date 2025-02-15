@@ -38,10 +38,6 @@ Hey! Here's [the WebApp version](https://webapp.cubegpt.org) designed just for y
 - Automatically generate plugin code based on the user's description.
 - Edit existing plugins.
 
-## Plans and TODOs
-
-Moved to [Projects Tab](https://github.com/orgs/CubeGPT/projects/4).
-
 ### Other projects of CubeGPT Team
 - [x] Bukkit plugin generator. {*.jar} ([BukkitGPT-v3](https://github.com/CubeGPT/BukkitGPT-v3))
 - [x] Structure generator. {*.schem} ([BuilderGPT](https://github.com/CubeGPT/BuilderGPT))
@@ -77,6 +73,14 @@ pip install -r requirements.txt
 
 ## Contributing
 If you like the project, you can give the project a star, or [submit an issue](https://github.com/CubeGPT/BukkitGPT-v3/issues) or [pull request](https://github.com/CubeGPT/BukkitGPT-v3/pulls) to help make it better.
+
+## Credits
+
+- [Isaac Turner](https://github.com/noporpoise)'s [unifieddiff.py](https://gist.github.com/noporpoise/16e731849eb1231e86d78f9dfeca3abc), we use it to apply diffs to the files.
+
+- [QGUI](https://github.com/QPT-Family/QGUI), the UI framework used in `ui.py`.
+
+- [CFR](https://github.com/leibnitz27/cfr), the decompiler used for the plugin editing feature.
 
 ## License
 ```

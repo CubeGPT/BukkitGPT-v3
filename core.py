@@ -88,7 +88,6 @@ def askgpt(
         response = client.chat.completions.create(
             model=model_name, messages=messages,
             max_tokens=10000,
-            max_completion_tokens=10000,
             extra_headers={
                 "HTTP-Referer": "https://cubegpt.org",
                 "X-Title": "CubeGPT"

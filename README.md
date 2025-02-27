@@ -1,18 +1,22 @@
+<!--
 <div align="center">
-<img src="https://github.com/CubeGPT/CubeAgents/blob/master/banner.jpeg?raw=true"/>
+<img src="https://github.com/CyniaAI/CubeAgents/blob/master/banner.jpeg?raw=true"/>
 <img src="https://img.shields.io/badge/Cube-Agents-blue">
-<a href="https://github.com/CubeGPT/BuilderGPT/pulls"><img src="https://img.shields.io/badge/PRs-welcome-20BF20"></a>
+<a href="https://github.com/CyniaAI/BuilderGPT/pulls"><img src="https://img.shields.io/badge/PRs-welcome-20BF20"></a>
 <img src="https://img.shields.io/badge/License-Apache-red">
 <a href="https://discord.gg/kTZtXw8s7r"><img src="https://img.shields.io/discord/1212765516532289587
 "></a>
-<!-- <p>English | <a href="https://github.com/CubeGPT/CubeAgents/blob/master/README-zh_cn.md">简体中文</a></p> -->
+<p>English | <a href="https://github.com/CyniaAI/CubeAgents/blob/master/README-zh_cn.md">简体中文</a></p>
 <br>
 <a href="https://discord.gg/kTZtXw8s7r">Join our discord</a>
 <br/>
 </div>
+-->
 
 > [!NOTE]
-> Developers and translators are welcome to join the CubeGPT Team!
+> Developers and translators are welcome to join the CyniaAI Team!
+
+[Join our discord](https://discord.gg/kTZtXw8s7r)
 
 ## Introduction
 > Give the LLM your idea, AI generates customized Minecraft server plugins with one click, which is suitable for Bukkit, Spigot, Paper, Purpur, Arclight, CatServer, Magma, Mohist and other Bukkit-based servers.
@@ -26,7 +30,7 @@ BukkitGPT is an open source, free, AI-powered Minecraft Bukkit plugin generator.
 > Issues and questions about BukkitGPT WebApp should be directed to our [Discord Server](https://discord.gg/kTZtXw8s7r).
 
 Don't want to deal with Python, Maven, BuildTools, and other complicated environments?
-Hey! Here's [the WebApp version](https://webapp.cubegpt.org) designed just for you - generate plugins **even on your phone**!
+Hey! Here's [the WebApp version](https://webapp.CyniaAI.org) designed just for you - generate plugins **even on your phone**!
 
 *The service is paid since the API key we are using is not free. You can get 1 key for 5 generations for $1 [here](https://ko-fi.com/s/cd5d4fcaba) or [here (for Chinese users)](https://afdian.com/item/b839835461e311efbd1252540025c377)
 
@@ -40,22 +44,22 @@ Hey! Here's [the WebApp version](https://webapp.cubegpt.org) designed just for y
 
 ## Plans and TODOs
 
-Moved to [Projects Tab](https://github.com/orgs/CubeGPT/projects/4).
+Moved to [Projects Tab](https://github.com/orgs/CyniaAI/projects/4).
 
-### Other projects of CubeGPT Team
-- [x] Bukkit plugin generator. {*.jar} ([BukkitGPT-v3](https://github.com/CubeGPT/BukkitGPT-v3))
-- [x] Structure generator. {*.schem} ([BuilderGPT](https://github.com/CubeGPT/BuilderGPT))
+### Other projects of CyniaAI Team
+- [x] Bukkit plugin generator. {*.jar} ([BukkitGPT-v3](https://github.com/CyniaAI/BukkitGPT-v3))
+- [x] Structure generator. {*.schem} ([BuilderGPT](https://github.com/CyniaAI/BuilderGPT))
 - [ ] Serverpack generator. {*.zip} (ServerpackGPT or ServerGPT, or..?)
 - [ ] Have ideas or want to join our team? Send [us](mailto:admin@baimoqilin.top) an email!
 
 ## Requirements
-You can use BukkitGPT on any computer with [Java](https://www.azul.com/downloads/), [Maven](https://maven.apache.org/), [Python 3+](https://www.python.org/) **AND** [BuildTools](https://github.com/CubeGPT/BukkitGPT-v3#the-pom-for-orgspigotmcspigotjar1132-r01-snapshot-is-missing) installed. 
+You can use BukkitGPT on any computer with [Java](https://www.azul.com/downloads/), [Maven](https://maven.apache.org/), [Python 3+](https://www.python.org/) **AND** [BuildTools](https://github.com/CyniaAI/BukkitGPT-v3#the-pom-for-orgspigotmcspigotjar1132-r01-snapshot-is-missing) installed. 
 
 ## Quick Start
 
 1. Clone the repository and install the dependencies with command:
 ```bash
-git clone https://github.com/CubeGPT/BukkitGPT-v3
+git clone https://github.com/CyniaAI/BukkitGPT-v3
 cd BukkitGPT-v3
 python -m venv venv
 source venv/bin/activate # for Windows, use `venv\Scripts\activate`
@@ -76,11 +80,11 @@ pip install -r requirements.txt
 6. You'll find your plugin in `projects/<artifact_name_of_your_plugin>/target` folder.
 
 ## Contributing
-If you like the project, you can give the project a star, or [submit an issue](https://github.com/CubeGPT/BukkitGPT-v3/issues) or [pull request](https://github.com/CubeGPT/BukkitGPT-v3/pulls) to help make it better.
+If you like the project, you can give the project a star, or [submit an issue](https://github.com/CyniaAI/BukkitGPT-v3/issues) or [pull request](https://github.com/CyniaAI/BukkitGPT-v3/pulls) to help make it better.
 
 ## License
 ```
-Copyright [2024] [CubeGPT Team]
+Copyright [2024] [CyniaAI Team]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
